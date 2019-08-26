@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script
+  src="https://code.jquery.com/jquery-2.2.4.min.js"
+  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+  crossorigin="anonymous"></script>
+<script src="js/index.js"></script>
+<style>
+	#targetDiv {
+		width : 300px;
+		height: 300px;
+		background-color: yellow;
+		
+	}
+</style>
+
+</head>
+<body>
+	<h1>아래 영역에 이미지를 drag and drop하세요!!</h1>
+	<div id = "targetDiv"
+		ondragover="return false"
+		ondragenter="return false"
+		ondrop="imgDrop()">
+	</div>
+	<h1>여기에 결과값이 출력되요!!</h1>
+</body>
+</html>
