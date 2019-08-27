@@ -1,0 +1,1340 @@
+cpu리눅스
+파이썬, Numpy(넘파이, 수치계산용 라이브러리), Pandas
+머신러닝 TensorFlow
+빅데이터 저장 하둡
+빈데이터 분석 R
+안드로이드(시스템)
+IOT
+
+1일차(190626) 리눅스
+
+VMware 5버전
+Virtual Box
+
+CentOS 설치 (RedHat은 유료)
+
+관리자 root/비번
+
+종료: shutdown -P now / halt-p / init 0(runlevel)
+
+
+재시작: shutdown -r now / reboot / init 6
+
+로그아웃: exit, logout
+
+ctrl+alt+f1~f6: 가상 콘솔
+
+runlevel: init명령어 뒤에 붙는 숫자를 의미
+0: 종료모드
+1: 시스템복구모드
+2~4: 텍스트기반 다중 사용자 모드
+5: 그래픽 기반 다중 사용자 모드
+6: 리부트
+
+pwd(print working directory)
+cd(change directory)
+terminal을 실행 시킨 후 working directory를
+/lib/systemd/system로 이동
+-ls (list) :현재 디렉토리 안의 파일이나 디렉토리 목록을 출력
+
+ls -al: 숨긴 파일까지 다 보여줌
+ex) ls -al runlevel*
+
+/lib/systemd/system 안의 runlevel *을 li로 출력
+
+
+
+centOS 백업방법
+
+
+처음 부팅 시 어떤 runlevel로 실행할 지 지칭하는 링크
+=>/etc/systemd/system/default.target
+
+이 링크를 다른 target으로 변경
+
+ln -sf /lib/systemd/system/multi-user.target
+	/etc/systemd/system/default.target
+
+======================================================
+2일차 리눅스
+
+	자동완성
+	파일이나 디렉토리의 이름의 일부만 입력한 후
+	Tab키를 이용하여 완성하는 기능
+	파일이름이 중복인 경우 자동 완성 불가 tap두번 누르면 검색이름 중복된 이름들 검색 
+
+	ls -al(a는숨긴 파일 포함, l은 자세한 설명(퍼미션, 소유자, 그룹 , 파일크기 등)
+	
+	
+	파일의 내용을 확인하고 싶을 때 간단히 사용하는 명령어
+	cat명령을 이용
+	cat anacond-kr.cfg
+
+	기본적으로 도스키 제공(화살표 위,아래를 이용해 기존 명령어 사용 가능)
+
+	메모장 만들기
+	-gedit (해당 프로그램은 GNOME이라는 윈도우 매니저를 이용하는 경우에만 사용가능)
+
+
+	한글변환: 윈도우키+스페이스키
+
+
+	리눅스는 확장자 의미 없음. 그냥 사용자가 파일 파악하기 쉽게 하기 위해 사용
+	
+	
+	startx
+
+
+	터미널 모드인 경우 전통적으로 vi라는 에디터 이용
+
+	vi는 ex모드, 입력모드 i(현재위치), a(다음위치)로 입력모드 전환
+	입력모드나와 EX모드로 가기위해 ESC 이용.
+		
+
+	ex mode에서 한 글자 삭제(x), 한 줄 삭제(dd), 한 줄 복사(yy), 
+	여러줄 삭제(숫자키+dd)/복사(숫자키+yy), 붙여넣기(p) 기능
+	
+
+	:을 누르면 밑에 :뜸
+	그 후 w를 누르면 파일 저장, q누르면 파일 빠져나옴
+	
+	
+	!v는 최근에 V를 사용한 것을 실행
+	
+마운트 개념
+마운트: 물리적인 장치(하드디스크, CD/DVD, USB)들을 사용하기 위해서 
+특정한 위치(디렉토리)에 연결하는 과정
+
+CD/DVD에 대한 장치 이름 => /dev 안에 cdrom이라는
+잡혀있음
+#cd /dev =>현재 working directory가 /dev로 변경
+#ls -al cdr*
+현재 자동으로 마운트 된 cd/dvd 위치는 /run/media/root/CD타이틀 형태로 마운트
+
+mount 해제
+일단 사용자의 홈 디렉토리로 이동
+#cd
+#umount /dev/cdrom(or /dev/sr0)
+
+특정 mount point(디렉토리)를 이용하여
+cd/dvd를 mount 하기
+#mkdir mycdrom (디렉토리 이름) 
+	
+마운트 명령을 이용해서 cd를 특정 디렉토리와 연결
+#mount -t iso9660 /dev/cdrom /roo/mycdrom (t는 타입, iso9660은 cd, 원본 위치, 설치 위치)
+
+iso파일을 제작해서 mount해서 사용해 보아요!
+iso파일(.iso) 국제표준기구(ISO)가 표준으로 재정한 광학 디스크 압축 파일
+
+Linux에서는 이런 iso파일을 쉽게 만들 수 있다.
+사용하는 프로그램은 genisoimage
+해당 프로그램이 우리 시스템에 설치가 되어 있는지부터 확인
+rpm을 이용해서 해당 프로그램(pakage)가 설치되어 있는지를 확인
+
+RPM(RedHat Pakage Manager)
+#rpm -qa genisoimage(qa 파일 있는지 확인)
+설치 확인
+
+이 프로그램을 이용 /boot 디렉토리 내용을 iso파일로 압축할 예정
+#genisoimage -r -J -o boot.iso /boot
+(-r -J 대소문자 구별, 파일이름 8글자 이상 상관없음, o는 아무 파일 가능, /boot안에 있는 것)
+
+필수적인 명령어
+1. ls (list): 파일과 디렉토리의 목록을 출력하기 위해 사용
+일반적으로 사용하는 옵션은 -al을 많이 이용.
+
+2. cd (change directory): working directory를 이동하기 위해서 사용.
+ -cd 명령에 인자를 주지 않으면 현재 사용자의 home directory로 이동
+ -.(현재 디렉토리를 의미) ..(상위 디렉토리를 의미)
+
+3. pwd (print working directory)
+
+4. rm: 파일이나 디렉토리를 지울때 사용
+ 많이 사용하는 옵션은 -rf를 이용
+ -r: 재귀적으로 특정 디렉토리와 그 안의 디렉토리들을 삭제할 때 사용
+ -f: force 강제적 삭제
+ #rm -rf /root/myiso
+
+5. cp: copy, 파일이나 디렉토리 복사
+ #cp abc.txt bbb.txt
+
+6. touch: 파일 크기가 0인 파일을 생성할 때 사용.
+ #touch newfile
+ =>newfile이라는 파일이 없는 경우 파일 사이즈가 0인 새로운 파일이 생성
+ => 현재 newfile이라는 이름의 파일이 있는 경우
+ 해당 파일의 수정날짜를 현재 날짜로 변경
+
+7. mv: move의 약자로 파일을 이동할 때 사용, 파일이나 디렉토리의 이름을 변경할 때 사용 
+ #mv aaa.txt bbb.txt
+
+8. mkdir: make directory
+9. rmdir: rm directory 디렉토리를 삭제하기 위한 명령(단, 디렉토리안에 파일이나 
+다른 디렉토리 x
+
+10 cat: concatenate. 텍스트로 작성된 파일의 내용을 출력
+
+11. head, tail: head는 텍스트파일 상위 10중, tail을 텍스트 파일의 하위 10불 출력
+
+12. more: cat과 유사한 기능, 텍스트 파일의 내용을 페이지 단위로 출력
+
+13. clear: terminal 을 깨끗히 지우기
+-------------------------------------------------
+사용자와 그룹과 퍼미션
+
+ -리눅스는 다중 사용자 시스템
+ -기본적으로 root이라는 이름의 superuser가 존재
+ -모든 사용자는 특정 그룹에 속함
+
+ -리눅스 시스템의 모든 사용자는 /etc/passwd 파일에 정의 되어있다.
+
+ #cat /etc/passwd
+
+root:		x:		0: 		0:		root:			/root		bin/bash
+사용자이름: 	패스워드	사용자 ID	그룹아이디	사용자 전체 이름  	홈 디렉토리	기본 셀(명령어 해석기)
+ -각 사용자에 대한 비밀번호는 /etc/shadow 파일에 정의되어 있다.
+ #cat /etc/shadow
+암호로 저장되어 찾기 힘들다. root만 접근 가능
+
+ -그룹에 대한 정보는 /etc/group 파일에 들어있음
+
+centos:x:1000
+그룹 이름 centos
+그룹 아이디 1000
+
+centos:x:1000:0
+유저 이름 centos, 유저 아이디 1000, 그룹 아이디 0
+
+ -새로운 사용자를 추가. 
+ #useradd testuser: testuser라는 이름의 사용자를 추가
+ => 새로운 사용자 추가 할 때 특정 옵션을 이용하지 않고 사용자를 추가하게 되면 
+사용자 id는 맨 마지막 사용자 id+1이 생성된다.
+
+ #useradd -u 1111 testuser: 사용자를 추가할 때 특정 사용자의 id를 사용할 수 있다.
+ #useradd -g root testuser: 사용자를 추가할 때 사용자의 그룹을 root 그룹으로 추가.
+ #useradd -d /newhome testuser: 기본적으로 일반 사용자의 홈디렉토리는 /home/testuser로 잡힘
+ 
+ #실습
+ #useradd -g centos testuser =>새로운 사용자 추가 성공, 비번 설정 안해서 로긴 불가
+ #passwd testuser 비밀번호 수정
+--------------------------------------------------------------------------------
+ 사용자의 정보를 수정하려면?
+ #usermode -g root testuser
+ 
+ 사용자를 삭제하려면?
+ #userdel -r testuser (-r을 주면 사용자의 홈디렉토리도 같이 삭제)
+
+-------------------------------------------------------------------------
+ 파일과 디렉토리의 소유와 퍼미션
+
+ - rw- r-- r--.  1 root root   27  6월 27 14:35 sample.txt
+1. 맨 앞에 1칸은 이 파일의 종류를 지칭 
+ -: 파일을 지칭
+ d: 디렉토리를 지칭
+ l: 링크(심볼릭링크)를 지칭 (링크는 하드 링크, 심볼릭 링크로 나뉨)
+
+2. 그 뒤에 9칸은 해당 파일(디엘토리)의 퍼미션을 지칭
+rw-              r--            r--
+421
+소유자의 퍼미션  그룹의 퍼미션  other의 퍼미션
+
+r: readable
+w: writable (수정할 수 있는)
+x: excutable (실행할 수 있는)
+
+
+파일의 퍼미션 바꾸기
+rw- r-- r--
+rw- rw- --- =>660
+
+#chmod 660 sample.txt
+
+파일의 소유자와 그룹을 변경
+#chown centos sample.txt => 해당 파일에 대한 소유자를 변경
+#chown centos.centos sample.txt =>해당 파일에 대한 소유자와 그룹을 동시에 변경
+#chgrp centos sample.txt => 해당 파일에 대한 그룹만 변경
+
+심볼릭링크(바로가기)
+
+ 
+===============================================================
+3일차
+
+기본적인 linux 사용에 대한 내용을 알게되면 그 다음은 각종 application의 설치에 관한
+내용으로 넘어감
+
+ -RPM(RedHat Package Manager)
+package: window에서 말하는 exe 설치파일. (.rpm)
+
+패키지 설치:
+rpm-Uvh 패키지이름.rpm
+(U: 설치/ 업그레이드, v 설치과정 출력, h 설치진행도 #으로 출력)
+
+패키지 삭제:
+rpm -e 패키지이름
+
+디펜던시 문제점이 있음(Maven과 달리 의존성 관리 안됨). 
+수동으로 셋팅해야 함(필요한 기본자료들을 미리 깔아놔야함)
+
+=>>>>이 무제를 해결하고자 나온 것.
+YUM(Yellodog Updater Modified)
+
+설치: yum install 패키지 이름
+삭제: yum remove 패키지 이름
+
+예) yum install emacs
+
+-파일 압축
+많이 사용되는 압축파일 형식 (xz, bz2, zip)
+
+사용방법
+
+파일을 압축할 경우: xz 파일명
+주의점: 파일을 압축한 후에 원본 삭제
+
+파일 압축을 해제할 경우 :xz-d 압축파일명 (decompression)
+
+-특정 디렉토리 안의 모든 파일을 압축해서 파일 1개로 만들고 싶을 때
+
+=> 특정 디렉토리 안의 파일들을 1개로 묶은 후에 압축
+
+tar 명령어를 이용해서 파일을 묶고 푼다.
+파일을 묶을때: -cvf
+묶인 파일을 풀 때: -xvf
+#tar -cvf 묶은 파일명(boot.tar) /boot
+
+-파일(디렉토리)를 찾을 때
+    find [경로] [옵션]          
+ex) find /boot  -name "*.conf"
+    find /boot  -size +10k -size -100k
+
+CRON: 주기적으로 반복되는 작업을 자동화시킬 수 있는 도구
+
+관련파일은 /etc/crontab 파일
+반복작업은 crond라는 데몬 프로세스가 실행
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name  command to be executed
+01 00 * * * root touch test.txt (*는 매 시간마다)
+
+AT: CRON과 유사하지만 반복이 아닌 일회성 작업을 예약
+#at 3:00am tomorrow 
+#at now +1 hours
+#at now +1 minutes -> 명령어 넣기 -> ctrl+D
+
+ps: 현재 수행되고 있는 process의 목록을 볼수 있음
+모든 프로세스를 살펴보기 위해서는 -ef 옵션을 이용
+#ps -ef
+현재 edeit라는 프로세스가 살아있음(stopped)
+
+ps -ef를 이용하면 현재 gedit의 프로세스 id를 확인할 수 있다.
+이 프로세스 id(pid)를 이용하면 현재 프로세스를 제거할 수 있음 
+kill -9 pid (해당 프로세스 종료)
+
+--------------------------------------------------------------------
+빅테이터 분석
+
+-개발환경설정
+python언어를 이용
+파이썬 개발을 할 때 가장 일반적인 개발툴: '파이참'(좀 무거움)
+파이썬 데이터분석을 할 때 가장 일반적인 개발툴: '주피터 노트북'
+
+1단계 파이썬 언어 스펙
+->프로그램 작성에 대한 연습문제
+2단계 파이썬 데이터 분석 라이브러리
+->numpy & pandas 사용방법 (난이도 높음)
+3단계 머신 러닝 (기계학습 by tensorflow)
+4단계 딥러닝 by tensorflow
+
+개별적으로 설치하기보다 개발툴+인터프리터+각종 라이브러리가 합쳐져있는 
+anaconda를 설치할 예정
+anaconda prompt를 관리자 권한으로 실행
+
+pip 패키지 설치도구 최신 버전 업그레이드
+=> python -m pip install --upgrade pip (-m 파이썬을 이용해 외부 프로그램 실행)
+
+-가상 환경을 생성
+우리가 나중에 사용할 tensorflow를 이용하기 위해 파이썬 3.6버전에 맞춰줘야 함
+=> conda create -n cpu_env python=3.6 openssl (n:이름 openssl ssl라이브러리)
+
+현재 존재하는 가상환경의 리스트를 출력
+=>conda info --envs
+
+생성된 가상환경으로 전환
+=>activate cpu_env
+
+nb_conda설치
+=>conda install nb_conda
+
+
+개발환경 실행
+=>jupyter notebook
+내장 웹서버가 동작=> 크롬 브라우져가 실행이 되서 개발 환경 실행
+
+만약 크롬 가상환경에서 안 보일 경우
+>>python -m ipykernel install --user --name cpu_env --display-name=[CPU_ENV]
+
+마지막 환경설정(working directory 설정)
+jupyter notebook --generate-config
+
+c.NotebookApp.notebook_dir = 'C:/python_ML'
+C드라이브에 폴더도 생성해야 함.
+
+
+-------------------------------------------------------------------
+4일차 - 파이썬
+
+input_value = input("숫자를 입력하세요!")
+파이썬 내일 끝
+
+
+-------------------------------------------------------------------
+5일차 -파이썬
+
+JAVA 
+
+절차적 프로그래밍 (C언어)
+절차적 언어의 프로그래밍 방식
+프로그램을 기능으로 분할해서 하위기능부터 구현하고
+전체 기능을 통합해서 구현
+
+ex) 은행 프로그램 구현
+ - 은행의 기능을 판별
+  - 예금업무
+    - 입금업무
+      -자행입금
+      -타행입금
+    - 출금업무
+  - 대출업무
+  - 외환업무
+  - 보험업무
+  - 기타업무 
+
+장점: 프로그램 설계가 쉽고, 빠르게 빌딩할 수 있음->인건비 감소
+단점: 1990년  중반 => 인터넷 도입 => 정보량 증가
+      =>유지보주에 대한 요구사항이 지속적 발생 
+      유지보수 비용 > 개발비용
+      프로그램의 페러다임의 변화
+      절차적 프로그램->객체지향 프로그램
+
+객체지향
+장점: 유지보수에 탁월(재사용성)
+단점: 설계가 어렵고, 구현에 시간이 오래 걸림.
+객체지향 프로그래밍은 어떻게 프로그래밍을 하는 것일까?
+
+현실세계의 구현해야 하는 문제를 그대로 프로그램으로 모델링 하려는 방식
+
+현실세계의 여러 구성요소(개체)를 프로그램적으로 묘사하기 위해
+class라는 개념을 도입
+=> 행동(method), 특징(field)
+
+
+
+객체지향 프로그래밍
+
+내일은 넘파이 할 예정
+
+activate cpu_env
+jupyter notebook
+
+
+-----------------------------------------------------------
+6일차 파이썬
+
+1. numpy module을 시스템에 설치
+=>conda install numpy (파이썬만 쓸때는 pip install numpy)
+
+중간값 = > 평균
+편차 => 각 값에서 평균을 뺀 값
+분산, 표준편찬, 공분산, 상관관계
+
+
+----------------------------------------------------
+6일차 numpy, pandas
+
+데이터 전달 포멧
+
+1. CSV(Comma Seperated Value)
+콤마로 데이터 구분
+=> 부가적인 데이터가 많지 않아서 대용량의 데이터를 표현할 때 적합
+
+column 속성명 제외하고 불러들일 예정
+
+conda install pymysql
+
+1. sql 설치, bin 폴더로 들어가 cmd 실행 
+
+2. dbms 가동 => mysqld (가동 중에 창 닫지 말 것)
+
+3. 다른 커맨드 창으로 mysql console로 진입할 예정
+
+4. mysql -u root
+
+5. 새로운 사용자 생성
+>create user python identified by "python"; (id=파이썬, 비번=파이썬)
+>create user python@localhost identified by "python"; 
+(외부 네트워크 접속을 위해서)
+
+6. DB 생성
+>create database library;
+
+7. 새로운 사용자에게 db사용권한 부여
+>grant all privileges on library.* to python;
+>grant all privileges on library.* to python@localhost;
+
+9. console에서 command창으로 빠져나감.
+>exit
+
+10. command 창에서 제공된 script file을 이용해서 db를 빌딩
+>mysql -u python -p library < _tableDump.sql (u: user, p: password)
+
+------------------------------------------------------------------
+7일차 pandas
+
+데이터 전달을 위한 포멧(표준)
+
+1. CSV (Comma Seperated Value) : ","로 데이터를 구분해서 
+구분된 데이터를 전송, 이용하는 방법
+예) 홍길동, 서울, 30, 김길동, 인천
+
+장점) 부가적인 데이터가 작음
+=> 대용량의 데이터를 처리하는데 적합
+
+단점) 데이터를 사용하려면 기본적인 파서프로그램을 작성
+데이터의 형태가 변형이 되면 프로그램 자체를 수정
+=> 유지보수의 문제
+구조적인 데이터를 표현하기 적합하지 않음
+
+2. XML : 마크업 태그를 이용해서 데이터를 표현하는 방식
+예) <name>홍길동</name><address>서울</address>
+
+장점) 제공되는 파서를 이용해서 데이터 처리를 손쉽게 할 수 있음
+구조적인 데이터를 표현하기에 적합
+
+단점) 부가적인 데이터가 너무 큼
+
+3. JSON (JavaScript Object Notation) : 
+예) {"name":"홍길동","address":""서울"}
+자바스크립트 객체, 파이썬 딕션어리 형식
+
+장점) 구조적 데이터 처리에 적합
+XML에 비해 부가적인 데이터가 적음
+단점) CSV방식에 비해 부가적인 데이터가 있음
+
+----------------------------------------------------------
+8일차 pandas
+
+
+--------------------------------------------------
+9일차 Pandas
+lending club data
+
+Linux => 추후 하둡 시스템을 사용하기 위해 간단한 형태로 
+시스템 명령어 위주로 학습
+
+파이썬 => 기본 언어 특성
+numpy => ndarray라는 자료구조와 여러가지 함수를 제공
+
+pandas => 데이터분석(탐색적 데이터분석)을 하기 위한
+          파이썬 모듈
+
+머신러닝(기계학습) => 데이터 분석의 또 다른 방법
+
+======================================================
+머신러닝의 분류
+
+-Supervised Learning (지도학습): 
+	training set을 통해서 학습
+	lable화된 데이터를 이용해 학습
+	예측모델을 생성한 후 예측모델을 이용하여 실제 데이터 예측
+
+ => 우리가 관심있어하는 모델
+ => 3가지 종류가 있음
+ 1) Linear regression(선형 회귀): 추측한 결과값이 선형값(값의 분포 제한 x)
+ 2) Logistic regression: 추측한 결과값이 논리값(2 중 1개)
+ 3) Multinomial Classification: 추측한 결과값이 논리값
+                                (정해져 있는 여러개 중 1게)
+
+-Unsupervised Learning: 
+	training set을 통해서 학습
+	데이터에 lable이 없음
+	비슷한 데이터끼리 clustering
+
+1. tensorflow module 설치(cpu용)
+conda install tensorflow
+
+--------------------------------------
+10일차 머신러닝
+
+-Supervised Learning (지도학습)
+ -분류  
+  Multinomial Classification
+ -회귀
+  Logistic regression 
+  Linear regression
+
+-Unsupervised Learning
+  학습 데이터를 기반으로 데이터를 clustering
+
+-강화학습
+
+
+pip install sklearn
+
+---------------------------------------
+11일차 머신러닝
+
+-------------------------------------
+12일차 머신러닝
+
+MNIST
+읽어들인 숫자 하나나가 픽셀로 되어있음
+
+픽셀 정보가 어떤 숫자인지 학습시킴
+
+입력데이터는 숫자에 대한 픽셀정보가 들어옴 (28*28)
+-> 이 픽셀정보가 어떤 숫자인지를 알려주는 label도 제공(0~9)
+
+kaggle 머신러닝, 딥러닝 경진 사이트
+
+<수행평가>
+train.csv를 7:3으로 나누어서 정확도 확인
+batch 형태로 데이터를 불러들여서 학습
+test.csv를 이용하여 prediction 결과 도출
+submission.csv파일을 생성하고 kaggle 사이트에 제출 및 확인
+
+파일 만들기 쉬움
+----------------------------------------------------
+
+13일차 190716 딥러닝
+
+내일 cnn 논리 구현 힘듬
+다음날 앙상블 5% 정도 올라감
+
+mini project
+java web programming+python tensorflow
+클라이언트로부터 숫자 이미지 파일을 입력받아
+딥러닝을 이용해 숫자 예측결과를 ajax를 이용해 클라이언트에게 출력
+
+tf.reset_default_graph()
+89.5%
+
+data=["label","y_date"]
+dataframe = pd.DataFrame(data)
+dataframe.to_csv("저장할 csv파일 경로", header=False, index=False)
+
+900, 0.01 81%
+600, 0.01 89% 0.02 1점대 0.03 2점대 0.005 93% 0.001 94.4% 0.005 94.6%
+500 0.01 70%
+300, 0.01 70%
+
+--------------------------------------------------------------
+14일차 190717 딥러닝
+
+CNN
+입력 데이터를 바꾸는 것
+
+convolution
+사진을 줄이고, 색깔은 변해도, 윤곽은 남김
+
+convolution layer
+여러 형태의 사진들 사용
+
+훈련 시키다 보면 윤곽이 흐려지고 비트만 남음. 근데 인식함.
+
+32x32x3(색상 rgb)
+
+----------------------------------------------------------------
+15일차 190718 mnist cnn, 앙상블
+
+머신러닝 앙상블
+여러 개 모델을 사용해서 결과 도출
+
+-------------------------------------------------------------
+16일차 190719 mnist 앙상블(ensemble)
+
+-----------------------------------------------------------
+17일차 190722 미니 프로젝트
+
+Web 클라이언트로부터 숫자 이미지 파일을 입력받아
+Deep learning을 이용해 예측결과(이미지 파일의 숫자)를
+Ajax를 이용해 Web 클라이언트에게 출력
+
+--------------------------------------------------------
+18일차 190723 미니 프로젝트
+-------------------------------------------
+19일차 190724 미니 프로젝트
+
+안드로이드 2주 배울 예정
+
+1. web page에 img drag and drop
+=> HTML5 Drag and Drop API
+2. drop된 이미지의 file ref 획득
+=> HTML5 File API
+3. 이미지 파일을 서버로 전송
+=> jQuery & Ajax (FromData)를 이용한 파일 upload
+4. 서버쪽 Web program
+=> Java Servlet
+5. 받은 이미지 파일을 입력으로 Python 프로그램 실행
+=> Java Runtime
+6. 실행된 Python 결과를 Client에게 return
+
+프로젝트 완성후 코드 정리 및 GitHub repository 생성 및 저장
+
+구현방식
+1. 머신러닝 파이썬, 프레딕션 파이썬. 웹 프로그래밍 자바 서브렛
+ 구현방식: java runtime을 이용행 python process fork
+서버쪽 load가 증대. thread가 아닌 process로 실행
+안드로이드와 같은 플랫폼에서는 적용 힘듦
+
+2. 웹 프로그래밍 파이썬 flask
+
+3. 머신러닝 파이썬. 프레딕션 java(tensorflow api)
+web program -> java servlet
+구현방식->tensorflow java api로 구현
+스레드 방식이라 빠르고 서버 부하 줄임. 
+안드로이드 시스템에서 사용 가능
+
+------------------------------------------------------------
+20일차 190725 미니 프로젝트
+
+
+21일차 190726 미니 프로젝트
+
+TensorFlow for Jave (Web Application)
+
+1. CNN을 이용한 딥러닝은 파이썬으로 구현
+=> 모델로 생성하고 학습을 진행하는 부분까지 구현
+=> 이렇게 학습한 내용을 file로 저장
+=> 파일에 저장되는 내용은 TensorFlow 그래프와
+   Variable 데이터.
+
+2. Web Application 작성 (Java Servlet)
+ was : Tomcat 7.0
+ -Djava.library.path=C:\python_ML\DLL
+ 기본적인 설정 후 round trip방식의 web application을 작성
+ 1. dynamic web application 작성
+    Context Root: 웹 상에서 불리는 프로젝트 이름. -> cnn
+    URL Mapping: 웹 상에서 프로그램(servlet)을 지칭하는 이름-> /sample
+    Get 방식으로 호출=>브라우져 주소상에 서버쪽 호출 url을 입력해서
+    서버쪽 프로그램을 호출
+    Http://locatlost:8080/cnn/cample
+ => Servlet의 doGet method가 호출
+ -> 입력받고, 로직처리, 출력처리
+ => Tomcat에 의해서 우리 프로젝트가 서비스 되어야 함->deploy!!
+ => Round Trip 방식의 Web Application 실행
+  => 화면이 refresh됨
+  => 웹 프라우저는 서버가 보내준 내용을 랜더링 하는 역할
+     모든 데이터가 서버쪽에서 생성되서 네트워크를 통해 데이터가
+     클라이언트에게 전송되는 구조
+  => 핸드폰 시대 도래하면서 데이터 사용량을 최소화 할 필요가 생김
+  => 서버쪽 프로그램과 프론트엔드 프로그램을 따로 작성
+     HTML5로 작성 (react.js, view.js, angular)=>JavaScript
+  => AJAX 방식으로 프로그램을 작성
+  => AJAX (XML을 이용해 서버와의 통신을 가능하게 해주는 JavaScript 통신 기능)
+  => 순수 JavaScript AJAX는 구현이 복잡하고 유지보수가 쉽지 않음=>jQuery
+ 
+http://localhost:8080/cnn/sample ->(http req)->server
+web server(8080)->(클라이언트의 req 객체화)->
+servlet Container(engline):8089
+
+simple servlet calss->servlet container
+
+thread pool servlet container(4)
+
+---------------------------------------------------------
+클라이언트 프로그램(HTML, CSS, JavaScript=>HTML5)을 작성
+(jQuery를 기반으로 작성)
+=> 예측하고 싶은 이미지를 선택해서 이 이미지의 픽셀 정보를 추출해서
+   이 데이터를 서버에 전송. 이 전송되는 픽셀 데이터는 [1,784] 형태의데이터
+
+
+
+서버쪽 프로그램 작성
+=> 클라이언트가 보내는 [1,784]형태의 픽셀데이터를 받아서
+CNN 딥러닝 모델을 이용해서 prediction잡업후 결과 데이터를
+클라이언트에게 전송
+
+
+ctrl+f5 서버 변경된 내용 불러옴
+
+---------------------------------------------------------
+22일차 190729 안드로이드
+2주간 할 예정
+
+1. Android Studio  설치
+
+2. 삼성 USB 통합 드라이버 설치
+
+
+3. 폰 설정
+핸드폰 설정->빌드번호 7번 치면 개발자모드가 됨.
+개발자 옵션 생성->USB디버깅 활성화
+잠금화면 및 보안->출처 알수 없는 앱 사용 허용
+
+4. 샘플 프로그램 빌드, 설치, 실행.
+
+5. 가장 중요하게 생각해야 하는 학습부분 (동작방법 파악)
+ - Android Component
+  - Activity
+  - Service
+  - Broadcast Receiver
+  - Content Provider
+ - Android Framework
+
+6. Android 
+=> Google이 중심이 되서 개발이 진행중인 휴대 단말기용 플랫폼.
+=> 운영체제(OS-C 언어)+미들웨어(C,C++)+Android Framework(C, Java)
++ 기본 Application(주소록, 전화)로 구성된 Software Stack
+
+7. Android Version
+1.5 cupcake
+...
+8 Oreo
+9 Pie
+10 Q
+
+8. Android SW Stack
+
+9.  
+- Android Component
+  - Activity: 앱을 구성하고 있는 화면
+   => UI를 화면에 표시하고 관리하는 컴포넌트
+  - Service: UI와는 별개로 BackGround에서 실행가능한 컴포넌트
+    ex) 화면없이 음악듣기
+  - Broadcast Receiver: 
+    => broadcast를 잡아서 적절한 처리는 담당하는 component
+    ex) broadcast: 베터리 부족 통지.
+  - Content Provider
+    => 안드로이드 앱은 각 앱이 독자적으로 데이터를 관리
+       Content Provider를 통해 앱 간의 데이터 공유할 수 있도록 
+       기능 제공
+
+10. 안드로이드 Projuect의 구성
+MainActivity.java=>Activity class
+res: 리소스를 담당하는 폴더
+-drawable: application내에서 사용되는 그림파일 저장 
+-layout: Activity 화면 구성을 위한 xml
+(xml 파일명은 소문자)
+-values: 문자열, 색상, 스타일 등 부가적인 리소ㅅ들에 대한 정의
+-minmap:launcer 아이콘 자원을 저장.
+androidManifest.xml: application구성과 관련된 설정 정보를 가지고 있는 파일
+
+11. Logcat의 이용=>system.out.println()을 사용할 수 없음
+
+12. Activity
+
+@Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Log.i("MyTest","onCreate() 호출!!");
+    }
+
+onCreate => 실행 때 작동
+R.layout.activity_main => R 안드로이드 패키지, layout 폴더의 xml 파일
+
+13. View, ViewGroup
+View: 이미지, 입력상자, 콤보박스, 버튼...
+ViewGroup: layout
+View와 ViewGroup(layout)을 이용해서 화면을 구성 할 수 있음
+
+layout_width="match_parent"
+화면에 꽉 찬 것
+web_content
+자기 크기 만큼만 차지
+픽셀 숫자도 가능=> 화면이 깨질 수 있으므로 절대값 잘 안 넣음
+
+=> 하나의 Activity를 생성하고 내가 원하는 화면을 xml파일을 이용하여
+구성 할 수 있음.
+
+14. Activity의 life cycle
+Activity의 생명주기
+=> 어떤 상태가 존재하며 어떤 method가 callback되는지 확인해보기
+=> Activity의 상태전의와 callback 호출 및 활용
+
+activity class->(onCreate,onStart,onResume)->running 상태
+=>onPause()->pause 상태->onStop->stop 상태=>Onstart/Instart(),onDegime())
+or onDestroy()->killed 상태
+
+------------------------------------------------------------------
+23일차 190730 안드로이드
+
+Java의 Event 처리
+=>Delegation Model을 이용
+
+1. Event Source: 이벤트가 발생한 객체를 지칭
+자바 초창기에는 event source가 직접 event를 처리
+비효율적인 측면이 있어서 이벤트 처리방식을 변경
+=>Delegation Model로 변경
+전문적인 이벤트 처리 객체를 이용해서 이벤트를 처리
+
+2. Event Listener: 이벤트 처리 객체를 지칭
+
+3. Event 객체: 이벤트에 대한 세부적인 정보를 가지고 있는 객체를 지칭
+Event Listener에게 해당 객체가 전달
+
+4. Event Source에 Listener를 부착
+
+--------------------------------------------------------------
+24일차 190731 안드로이드
+
+1. MySQL DB 세팅(도서정보)
+->제공된 Script file을 이용해서 DB세팅
+
+2. Java Servlet으로 DB Access Program작성
+=> 입력: 책 제목의 Keyword
+=> 출력: 책 제목의 리스트(JSON)
+
+3. Android에서 java network 기능 중 HTTP request 호출기능을
+이용하여 servlet 호출 후 json받기
+
+4. json 형태로 데이터를 받아온 후 parsing해서 listview에 출력
+
+
+-------------------------------------------------------------
+25일차 190801 안드로이드
+
+1. MySQL DB 세팅(도서정보)
+->제공된 Script file을 이용해서 DB세팅
+DB: 데이터의 집합체
+DBMS: DB를 관리, 사용하기 위한 SW의 집합
+=> Oracle, DB2, infomix, sysbase, MySQL
+=> 초창기 60년대 (계층형 DB)->네트워크 DB(거의 사용X)
+수학자 논문 발표: 관계형데이터=> 데이터를 테이블 형태로 저장
+=> 관계해석, 관계대수=>IBM 해당 논문을 근간으로 DBMS를 구축(DB2)
+90년대 후반까지 잘 사용하다가 객체지향의 패러다임이 시작
+DB에서는 프로그램언어와는 다르게 객체지향의 중요한 특성만 받아들여
+객체-관계형 DB로 발전
+=>빅데이터시대, 비정형데이터를 관리 by No SQL 계열 DB(몽고 DB)
+
+--------------------------------------------------------
+1. MySQL DBMS 기동
+>>mysqld
+기본적으로 포트번호 3306 사용
+
+다른 cmd창에 sqld를 가동해야됨.
+
+2. MySQL daemon process가 실행이 되면 MySQL에 접속 할 수 있음
+우리는 MySQL console에 root 사용자로 접속
+
+>>mysql -u root
+
+3. MySQL에 접속한 후 사용자 생성부터 시작
+mysql> create user android identified by "android"
+mysql> create user android@localhost identified by "android";
+
+4. 데이터베이스 
+MySQL DBMS 안에 여러개의 DB를 생성하고 관리할 수 있음
+mysql>create database library2;
+
+5.3번 단계에서 만든 새로운 사용자 (android)에게 
+DB(library2)사용권한을 부여.
+mysql>grant all privileges on library2.*to android;
+mysql>grant all privileges on library2.*to android@localhost;
+
+6. 권한 flush
+mysql>flush privileges;
+
+7. 사용할 데이터를 DB에 구축하는 작업을 진행
+제공된 스크립트 파일을 이용해서 데이터 구축 진행
+mysql> exit (콘솔종료)
+>>mysql -u android -p library2 < _BookTableDump.sql
+
+8. 강사용 70.12.115.80
+
+Transaction
+정의: 작업의 최소단위, 특정한 단위 작업의 묶음을 트렌젝션으로 
+설정 할 수 있다.
+ex) 은행 이체(2천원)
+1. A 계좌에 잔액 확인 (selection)
+2. A 계좌에 2000원 빼기 (update)
+3. B 계좌에 잔액 확인 (Selection)
+4. B 계좌에 잔액+2000원 하기 (update)
+
+트랜잭션 사용 이유?
+DBMS에서 ACID라고 불리는 기능을 제공받기 위해서 설정
+Atomicity(원자성): 트랜젝션으로 지정된 작업은 모두 성공 or 하지 않은
+상태로 관리
+Consistency(일치성):트랜젝션이 종료된 후에 데이터의 일관성이 유지
+Isolation(독립성):트랜젝션 데이터 접근 제한
+Durability(영속성):트랜젠션 처리결과는 2차 저장소에 안전하게
+저장하는 것을 보장하는 기능
+
+
+
+
+
+
+
+
+2. Java Servlet으로 DB Access Program작성
+=> 입력: 책 제목의 Keyword
+=> 출력: 책 제목의 리스트(JSON)
+
+1.이클립스 설정
+utf-8
+2. Tomcat WAS를 이클립스와 연동
+=>클라이언트(Web Browser)가 tomcat을 통해서 서버프로그램을
+호출할 때 데이터를 전달 할 수 있음.
+기본적으로 이 데이터는 연결 통로가 ISO9958-1이라는 인코딩으로 됨.
+한글이 전달 될 경우 문제가 발생=> UTF-8해당
+데이터 연결통로의 인코딩 변경
+server.xml 파일을 수정해서 처리.
+URIEncoding="UTF8" in line 65,85
+
+2.3 Dynamic web proj 생성
+프로젝트이름: BookSearchForAndroid
+context root: bookSearch
+=> 프로젝트 생성
+=> MVC 패턴으로 파일을 생성
+클라이언트의 입력을 받고 출력을 내보내는 작업 
+by Servlet => Controller
+business logic을 담당=> Service
+DB 작업 담당 => DAO (Data Access Object)
+데이터 전달에 대한 객체 => DTO (Data Transfer Object)
+VO(Value Object), DO(Domain Object), Entity
+
+Servlet 생성, url mapping -> /searchTitle
+
+주소 끝에 붙임 => ?USER_KEYWORD=java
+http://localhost:8080/bookSearch/searchTitle?USER_KEYWORD=java
+
+
+3. Android에서 java network 기능 중 HTTP request 호출기능을
+이용하여 servlet 호출 후 json받기
+
+4. json 형태로 데이터를 받아온 후 parsing해서 listview에 출력
+
+
+----------------------------------------------
+26일차 190802 안드로이드
+
+영화진흥위원회 open api
+	
+주소:
+http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json
+Qeury String (키값, 날짜값)
+?key=430156241533f1d058c603178cc3ca0e&targetDt=20190801
+
+키값은 해당 사이트에 회원가입을 하면 개인적으로 발급
+
+입력값 
+날짜
+추출값
+제목
+클릭하면 세부정보까지
+
+----------------------------------------------------
+27일차 190805 안드로이드
+
+기존의 도서검색 프로그램은 DB로부터 검색된 도서명만 결과로 받아서
+Android Activity에 ListView로 단순 출력
+
+확장된 도서검색 프로그램은 DB로 부터 키워드로 검색된 도서에 대한
+도서 이미지, 도서 제목, 도서 저자, 도서 가격
+
+Android Activity에 Custom ListView로 출력
+
+http://localhost:8080/bookSearch/search?search_keyword=java
+
+code-generate-setter
+
+---------------------------------------------
+28일차 190806 안드로이드
+URL->이미지 데이터를 ImageView에 적용
+Implicit Intent
+1. 인텐트 필터의 중복
+
+중복이 되면 둘 중 하나 선택하게 함.
+한 번  선택후 default로 저장됨.
+설정=>어플리케이션으로 default 해제 가능
+
+2.지도 표현하기(Google Map=>KAKAO Map)
+==> 검색 서비스 
+구글이 아니기 때문에 설정이 바뀜.
+
+카카오 개발자 로그인
+네이티브 앱 키
+aedbf43578c0d0839f26a4afa94cdf64
+
+keytool -exportcert -alias androiddebugkey -keystore C:\Users\student\.android\debug.keystore -storepass android -keypass android | openssl sha1 -binary | openssl base64
+
+cmd 작업
+
+C:\Program Files\Java\jdk1.8.0_211\bin
+
+카카오맵 설명틀림
+
+
+3. 보안 관련 이슈처리(전화 걸기기능)
+
+
+
+
+박스오피스 순위(영화진흥위원회)+영화에대한 한줄평(Daum) 출력
+
+---------------------------------------------
+29일차 190807 안드로이드
+ 
+Android App작성
+KAKAO API를 이용하여 키워드를 이용한 도서 검색
+
+=> 결과를 JSON으로 받아서 Activity에 ListView등을
+이용하여 결과를 출력
+(얻어오는 데이터는 KAKAO API Reference 확인)
+-----------------------------------------------------
+Service 이용하여 처리
+
+-안드로이드를 구성하고 있는 4가지 Component중 하나
+
+-Background 작업이 필요한 경우에 많이 사용됨
+
+-Activity의 가장 큰 관심거리(처리)는 
+사용자와의 interaction
+
+-Service는 사용자와의 interaction은 없음!
+Activity를 위한 연산이나 특정 method를 제공
+Thread를 사용해서 처리
+
+-Service의 lifecycle(callback method)에 대해서
+알아둬야 함.
+
+-Service의 주요한 callback method 3개
+onCreate():서비스 객체가 처음 생성될 때 호출
+사용한 리소스에 대한 초기화 작업
+
+onStartCommand():실제 서비스가 일을 하기 위해서
+호출되는 method
+
+onDestroy():서비스 객체가 종료될 때 호출
+사용하던 Thread를 중지, 리소스를 해제
+
+service는 기본적으로 제대로 안끄면 계속 돌아감.
+
+---------------------------------------------
+30일차 190808 안드로이드
+
+Activity, Service
+-Broadcast?
+=>안드로이드 시스템으로부터 나오는 신호
+(베터리 용량 부족, 네트워크 환경 바뀜, USB연결)
+=> 사용자 App에서 발생시키는 임의의 신호
+
+-Broadcast Receiver는 Broadcast를 청취하는 component
+
+-Broadcast Receiver는 사용자와의 대면은 안함
+
+REST API 키
+98dc7911d78f9e884fb01df70f8aa3dc
+
+
+------------------------------------------------
+31일차 190809 안드로이드
+4번째 안드로이드 Component=>
+Content Provider(데이터를 제공할 때 사용)
+Content Resolver (제공된 데이터를 사용할 때 사용)
+우리의 안드로이드 앱은 sandbox model을 기반으로 동작
+하나의 앱에서 생성한 데이터는 해당 앱에 종속되고
+다른 앱에서 사용할 수 없음.
+
+우리가 앱을 만들어서 주소록에서 데이터를 가져와서
+이용하려고 함.
+
+사용자가 만드는 앱은 일반적으로 content provider를
+만들지 않음
+====================================
+안드로이드 앱은 데이터를 관리하는 방법
+일반적으로 File처리 DB처리
+
+안드로이드 시스템 내부에 있는 SQLite라는 소형 DB를
+이용해서 데이터 처리
+
+어떻게 SQLite를 이용하는가
+이렇게 만든 DB를 외부에 사용하려면 어떻게 해야 하는가
+다른 앱에서 가지고 있는 DB에 접근하려면 어떻게 해야 하는가
+
+-----------------------------------------
+32일차 190812 안드로이드
+
+Android Mini Project
+워킹데이 월화금
+자유주제
+Mnist와 Android 연동
+16일 금요일 테스트 진행
+-빅데이터 테스트(Python,Numpy,Pandas, Machine Learning)
+-안드로이드 테스트
+
+Ctrl+Shift+F 파일들 속 내용 검색
+
+------------------------------------------
+33일차 190813 안드로이드
+
+
+-------------------------------------
+34일차 190814 인사이트 특강
+
+빅데이터
+도구에 종속되지 말자. 수학 공부 필요
+전처리 과정을 알아야 함
+딥러닝<-신경망(chain 미분)<-perceptron<-Linear classifier
+----------------------------------------
+프로젝트 관리
+컨설턴스(사업기획 및 발주)-영업(제안)
+
+SI(New): 업무강도 높음,경력 축적(이력서) 유리
+SM(Lagacy):강도 낮음
+
+코어 목표: 요구,일정,원가,품질
+애자일 방법론: 문제점:업무방신의 현화 
+의사소통방식의 변화
+고객 인식의 변화
+
+결과보고서: 착수할때 기획하고, 진행중 작성하고 종료시 완료
+
+--------------------------------------
+35일차 190816 안드로이드
+
+저장 위치, 파일 이름 빈칸
+
+-------------------------------------
+36일차 190819 
+(차후 7일간)
+1. Java Lambda
+ - 람다 기본: 람다식의 의미가 무엇있지
+람다식의 장점: 코드의 간결화,Stream의 사용
+-람다 표현 방법: case by case로 설명
+-람다 scope: 필드를 사용하는 법과 지역변수를 사용하는 방법
+람다 내에서 this는 다른 객체를 지칭.
+2. Java Stream
+3. Java Thread
+4. Java IO (버퍼)
+5. Java NIO (비동기)
+6. Java Network (Java IO를 이용한, TCP)
+7. Java Network (Java NIO를 이용)
+8. 미니 프로젝트
+--------------------------------------
+mount/ls/cd/pwd/rm/cp(copy)/mv
+touch(크기 0인 파일 생성)
+
+-----------------------------------
+37일차 190820
+
+람다식은 특정 interface type의 변수에 
+저장이 되는 형태로 사용
+
+java.util.function이라는 package 제공
+이 안에 람다식의 target type으로 활용 가능한 
+interface를 넣어서 제공
+
+Consumer: 인자를 사용하고 리턴이 없음
+Supplier: 사용 인자 없음. 리턴값 도출
+Function:
+Operator:
+Predicate: 
+
+---------------------------------------
+38일차 190821
+
+1. Multi Processing
+ core가 2개 이상.
+2. Multi Tasking
+ 1개의 core가 여러 프로그램을 동시에 수행. 시분할
+3. Multi Threading
+ core의 개수와 상관없음
+ 1개의 프로그램은 내부적으로 여러개의 작업(thread)이
+동시에 진행 되어야할 겻우 존재. core를 시분할 하여
+각 작업에 할당
+
+----------------------------------------
+39일차 190822
+
+--------------------------------------
+40일차 190823 Java IO
+잦은 사용에는 별로고, 한꺼번에 받을 때는 효율이 좋은편.
+
+----------------------------------------
+41일차 190826
+월: 여러명의 클라이언트에게 echo 서비스 제공
+방 한 개 짜리 다중 채팅 구현
+화~목: 특강
+금: 지금까지 작업한 코드 git hub에 정리
+
+git에 파일 올라는 방법
+window-perspective-git
+폴더 생성
+Java EE 화면으로 와서 share
+git화면으로 와서 upload 하면 됨.
+
+----------------------------------------------
+42일차 190827
+vs code 설치
+
+git bash 실행
+
+//git 시작하기
+git init
+git status
+
+//git 업로드
+git add index.html
+git commit -m "first commit"
+git push origin master
+아이디, 비번 입력
+
+//git 다운로드
+git pull origin master
+
+//git 실행
+code .
+----------------------------------------------
+//git 체크포인트 이동
+git checkout aa22b //해당 체크 포인트 이동
+git checkout master //마스터 체크 포인트 이동
+
+//git clone
+$ git clone https://github.com/ysh903/ggutmal.git
+
+----------------------------------------------
+//git branch 연습하기
+http://git-school.github.io/visualizing-git/#free
+
+git commit -m "first commit"
+git branch comment //comment branch 생성
+git branch //현재 header 위치, header 그대로 master에 존재
+git checkout -b new //new branch 생성, header위치 new로 바뀜
+git branch //현재 header 위치
+git branch -d new //new branch 삭제, 오류: 현재 checkout branch를 지울 수 없음
+git checkout comment
+git commit -m "second commit"
+git branch -d new //new branch 삭제
+git checkout master
+git commit -m "third commmit"
+git merge comment //master를 중심으로 comment 합병
+git branch -d comment
+
+
+면접대비
+https://github.com/JaeYeopHan/Interview_Question_for_Beginner
+
+start bootstrap 무료 부트 스트랩 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
